@@ -25,16 +25,21 @@ export type WikiResult = {
 }
 
 export default class WikiPedia {
+  private wikiClient: ReturnType<typeof wiki>;
+
+  constructor() {
+    this.wikiClient = wiki({
+      apiUrl: 'https://en.wikipedia.org/w/api.php',
+    });
+  }
+
   /**
    * Search an artist's discography in Wikipedia, scraping the HTML content.
    * @param {string} artist The artist name
    * @returns Promise<WikiResult>
    */
-  static async searchDiscoGraphy(artist: string): Promise<WikiResult> {
-    const wikiClient = wiki({
-      apiUrl: 'https://en.wikipedia.org/w/api.php',
-    });
-    const page = await wikiClient.find(artist);
+  async searchDiscoGraphy(artist: string): Promise<WikiResult> {
+    const page = await this.wikiClient.find(artist);
     if (!page) {
       return {
         message: `No artist found for ${artist}`,

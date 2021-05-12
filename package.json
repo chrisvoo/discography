@@ -33,6 +33,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "checkvar": "^1.0.1",
     "cheerio": "*",

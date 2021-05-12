@@ -10,3 +10,4 @@ Before landing to the final solution, different API were tested:
 * [LastFM](https://www.last.fm/api/show/artist.getTopAlbums): even in this case, searching for the artist's top albums returns 57034 results for 1141 pages ([here's the GIST showing that](https://gist.github.com/chrisvoo/4eef37cd6bfecf7654f826dd2f970039)).
 
 
+https://blog.metabrainz.org/category/musicbrainz+breaking-changes/

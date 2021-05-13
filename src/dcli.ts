@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { envSchema } from './utils';
+import MusicBrainz from './provider/MusicBrainz';
 import { showResult } from './utils/terminal';
 
 const result = dotenv.config();
@@ -16,5 +17,10 @@ if (error) {
 }
 
 (async () => {
-  
+  const mb = new MusicBrainz();
+  const res = await mb.searchArtistDiscography(
+    'rancid', ['Live', 'Demo', 'Compilation'],
+  );
+
+  showResult(res);
 })();

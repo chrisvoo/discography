@@ -18,9 +18,14 @@ if (error) {
 
 (async () => {
   const mb = new MusicBrainz();
-  const res = await mb.searchArtistDiscography(
+  const res = await mb.getArtistDiscography(
     'rancid', ['Live', 'Demo', 'Compilation'],
   );
-
   showResult(res);
+
+  if ('artist' in res) {
+    const releaseGroup = res.releaseGroups.filter((rg) => rg.title.includes('Wolves'))[0];
+    const tracks = await mb.getTracksByReleaseGroup(releaseGroup.id);
+    showResult(tracks);
+  }
 })();

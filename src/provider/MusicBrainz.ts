@@ -1,5 +1,5 @@
 import axios, {
-  AxiosInstance, AxiosResponse,
+  AxiosInstance, AxiosResponse, AxiosError,
 } from 'axios';
 
 export enum Entity {
@@ -62,7 +62,7 @@ export interface SearchArtistResult {
 }
 
 interface ReleaseGroup {
-  id: number
+  id: string
   'first-release-date': string
   'primary-type': string
   title: string
@@ -70,7 +70,7 @@ interface ReleaseGroup {
 }
 
 export interface ReleaseGroupDetails {
-  id: number
+  id: string
   title: string
   releaseDate: string
   primaryType: string
@@ -87,9 +87,16 @@ export interface ErrorResponse {
   message: string
 }
 
+export interface Track {
+  id: string
+  length: number
+  title: string
+}
+
 /**
- * Implements the search artist and release-groups lookup.
- */
+ * An artist has many release groups (albums, live, collections). Every release group may have
+ * many releases in different formats (CD, vinyl, etc) and countries.
+ * Every release has a list of recordings (tracks) */
 export default class MusicBrainz {
     private API_ROOT_URL: string;
 
@@ -161,14 +168,14 @@ export default class MusicBrainz {
 
     /**
      * Searches the best match for the specified artist and automatically returns the
-     * release groups.
+     * release groups (albums)
      * @param {string} artist The artist's name
-     * @param {string[]} filterSecondaryTypes A list of secondary types to be filtered out
+     * @param {string[]} filterOutSecondaryTypes A list of secondary types to be filtered out
      * @returns {Promise<Discography | ErrorResponse>}
      */
-    async searchArtistDiscography(
+    async getArtistDiscography(
       artist: string,
-      filterSecondaryTypes: string[] = [],
+      filterOutSecondaryTypes: string[] = [],
     ): Promise<Discography | ErrorResponse> {
       let result: AxiosResponse<SearchArtistResult>;
       try {
@@ -178,7 +185,7 @@ export default class MusicBrainz {
       } catch (e) {
         return {
           error: true,
-          message: e.data.error,
+          message: (e as AxiosError).response?.data.error || e.message,
         };
       }
 
@@ -199,7 +206,7 @@ export default class MusicBrainz {
       } catch (e) {
         return {
           error: true,
-          message: e.data.error,
+          message: (e as AxiosError).response?.data.error || e.message,
         };
       }
       const {
@@ -208,10 +215,10 @@ export default class MusicBrainz {
 
       let groups = releaseGroupsResponse.data['release-groups'];
 
-      if (filterSecondaryTypes.length > 0) {
+      if (filterOutSecondaryTypes.length > 0) {
         groups = groups.filter(
           (group) => group['secondary-types'].every(
-            (type) => !filterSecondaryTypes.includes(type),
+            (type) => !filterOutSecondaryTypes.includes(type),
           ),
         );
       }
@@ -233,5 +240,57 @@ export default class MusicBrainz {
           secondaryTypes: group['secondary-types'],
         })),
       };
+    }
+
+    /**
+     * Here we automatically take the oldest release of a release group and call the `getTracks`
+     * method. This is done to simplify the obtainment of the information, since you get many
+     * releases for each group.
+     * @param {string} releaseGroup A release group id
+     * @returns {Promise<Track[] | ErrorResponse>}
+     */
+    async getTracksByReleaseGroup(releaseGroup: string): Promise<Track[] | ErrorResponse> {
+      let releasesResponse: AxiosResponse<any>;
+      try {
+        releasesResponse = await this.lookup(Entity['release-group'], releaseGroup, 'releases');
+      } catch (e) {
+        return {
+          error: true,
+          message: (e as AxiosError).response?.data.error || e.message,
+        };
+      }
+
+      // they should be already incrementally ordered by date, but we do the same
+      const releaseId: string = releasesResponse.data.releases.sort((r1: any, r2: any) => {
+        if (r1.date === r2.date) return 0;
+
+        return r1.date > r2.count ? -1 : 1;
+      })[0].id;
+
+      return this.getTracksByRelease(releaseId);
+    }
+
+    /**
+     * Here we retrieve the recordings of a specific release.
+     * @param {string} release A release id
+     * @returns {Promise<Track[] | ErrorResponse>}
+     */
+    async getTracksByRelease(release: string): Promise<Track[] | ErrorResponse> {
+      let releasesResponse: AxiosResponse<any>;
+      try {
+        releasesResponse = await this.lookup(Entity.release, release, 'recordings');
+      } catch (e) {
+        return {
+          error: true,
+          message: e.data?.error || e.message,
+        };
+      }
+
+      return releasesResponse.data.media[0].tracks.map((track: any) => ({
+        id: track.id,
+        length: track.length, // ms
+        title: track.title,
+        position: track.position,
+      }));
     }
 }

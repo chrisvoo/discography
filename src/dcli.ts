@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import { envSchema } from './utils';
-import MusicBrainz from './provider/MusicBrainz';
+// import MusicBrainz from './provider/MusicBrainz';
 import { showResult } from './utils/terminal';
+import Genius from './provider/Genius';
 
 const result = dotenv.config();
 
@@ -17,7 +18,7 @@ if (error) {
 }
 
 (async () => {
-  const mb = new MusicBrainz();
+/*   const mb = new MusicBrainz();
   const res = await mb.getArtistDiscography(
     'rancid', ['Live', 'Demo', 'Compilation'],
   );
@@ -27,5 +28,8 @@ if (error) {
     const releaseGroup = res.releaseGroups.filter((rg) => rg.title.includes('Wolves'))[0];
     const tracks = await mb.getTracksByReleaseGroup(releaseGroup.id);
     showResult(tracks);
-  }
+  } */
+  const genius = new Genius();
+  const lyrics = await genius.getLyrics('Rancid', 'Ruby Soho');
+  showResult(lyrics);
 })();

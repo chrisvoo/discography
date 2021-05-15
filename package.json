@@ -39,6 +39,7 @@
     "cheerio": "*",
     "commander": "^7.0.0",
     "dotenv": "^9.0.1",
+    "genius-lyrics": "^4.2.9",
     "inquirer": "^7.3.3",
     "joi": "^17.4.0",
     "ora": "^5.2.0",

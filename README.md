@@ -6,6 +6,9 @@ This is intended to be both an importable module and a CLI app (in progress). It
   - [Wikipedia](#wikipedia)
     - [`searchDiscography(artist: string, options: WikiPageOptions)`](#searchdiscographyartist-string-options-wikipageoptions)
     - [`searchTracks(albumTitle: string, options?: WikiPageOptions)`](#searchtracksalbumtitle-string-options-wikipageoptions)
+  - [MusicBrainz](#musicbrainz)
+    - [`getArtistDiscography(artist: string, filterSecondaryTypes: string[])`](#getartistdiscographyartist-string-filtersecondarytypes-string)
+    - [getTracksByReleaseGroup(releaseGroup: string)](#gettracksbyreleasegroupreleasegroup-string)
   - [Discarded providers](#discarded-providers)
 - [Terms of use](#terms-of-use)
 - [Resources](#resources)
@@ -14,12 +17,14 @@ This is intended to be both an importable module and a CLI app (in progress). It
 
 ### Wikipedia
 
+API and HTML parsing are both used to ge the required information.
+
 #### `searchDiscography(artist: string, options: WikiPageOptions)`
 
 This method extracts basic info about the page, the artist's MusicBrainz ID (if present), and a list of all studio albums. Here is it an example of what you get when
 you search `The Offspring`:
 
-```json
+```javascript
 {
     message: 'OK',
     data: {
@@ -29,19 +34,12 @@ you search `The Offspring`:
         touched: '2021-05-15T21:56:52Z'
     },
     albums: {
-        '/wiki/The_Offspring_(album)': { title: 'The Offspring', released: 'June 15, 1989' },
-        '/wiki/Ignition_(The_Offspring_album)': { title: 'Ignition', released: 'October 16, 1992' },
-        '/wiki/Smash_(The_Offspring_album)': { title: 'Smash', released: 'April 8, 1994' },
-        '/wiki/Ixnay_on_the_Hombre': { title: 'Ixnay on the Hombre', released: 'February 4, 1997' },
-        '/wiki/Americana_(The_Offspring_album)': { title: 'Americana', released: 'November 17, 1998' },
-        '/wiki/Conspiracy_of_One': { title: 'Conspiracy of One', released: 'November 14, 2000' },
-        '/wiki/Splinter_(The_Offspring_album)': { title: 'Splinter', released: 'December 9, 2003' },
-        '/wiki/Rise_and_Fall,_Rage_and_Grace': {
-        title: 'Rise and Fall, Rage and Grace',
-        released: 'June 17, 2008'
-        },
-        '/wiki/Days_Go_By_(The_Offspring_album)': { title: 'Days Go By', released: 'June 26, 2012' },
-        '/wiki/Let_the_Bad_Times_Roll': { title: 'Let the Bad Times Roll', released: 'April 16, 2021' }
+        'The_Offspring_(album)': { title: 'The Offspring', released: 'June 15, 1989' },
+        'Ignition_(The_Offspring_album)': { title: 'Ignition', released: 'October 16, 1992' },
+        'Smash_(The_Offspring_album)': { title: 'Smash', released: 'April 8, 1994' },
+        ...
+        'Days_Go_By_(The_Offspring_album)': { title: 'Days Go By', released: 'June 26, 2012' },
+        'Let_the_Bad_Times_Roll': { title: 'Let the Bad Times Roll', released: 'April 16, 2021' }
     },
     musicBrainzUrl: '//musicbrainz.org/artist/23a03e33-a603-404e-bcbf-2c00159d7067'
     }
@@ -58,7 +56,7 @@ This method lists all the songs of a particular album, converting the songs dura
 Here is it an example of what you get when you search `Smash_(The_Offspring_album)`.
 
 
-```json
+```javascript
 {
   message: 'OK',
   data: {
@@ -70,23 +68,63 @@ Here is it an example of what you get when you search `Smash_(The_Offspring_albu
     },
     tracks: [
       { num: 1, title: 'Time to Relax (Intro)', length: 25 },
-      { num: 2, title: 'Nitro (Youth Energy)', length: 147 },
-      { num: 3, title: 'Bad Habit', length: 223 },
-      { num: 4, title: 'Gotta Get Away', length: 232 },
-      { num: 5, title: 'Genocide', length: 213 },
-      { num: 6, title: 'Something to Believe In', length: 197 },
-      { num: 7, title: 'Come Out and Play', length: 197 },
-      { num: 8, title: 'Self Esteem', length: 257 },
-      { num: 9, title: "It'll Be a Long Time", length: 163 },
-      { num: 10, title: 'The Didjits', length: 122 },
-      { num: 11, title: 'What Happened to You?', length: 132 },
-      { num: 12, title: 'So Alone', length: 77 },
+      ...
       { num: 13, title: 'Not the One', length: 174 },
       { num: 14, title: 'Smash', length: 642 }
     ]
   }
 }
 ```
+
+### MusicBrainz
+
+It allows to freely get all the discography details of an artist/band. The fundamental thing to know is the structure of the entities:
+
+* An artist has many release groups (albums, compilations, live, etc)
+* every release groups may have multiple releases of that album (differing for publishing date, country, etc)
+* every release has many recordings (the tracks of an album)
+
+#### `getArtistDiscography(artist: string, filterSecondaryTypes: string[])`
+
+Retrieves the artist details and all the albums. The second parameter allows to filter
+out those items that have the listed secondary types in their `secondaryTypes` array.  
+Here is it a possible response if you search for `Rancid` discography:
+
+```javascript
+{
+  artist: {
+    id: '24f8d8a5-269b-475c-a1cb-792990b0b2ee',
+    name: 'Rancid',
+    country: undefined,
+    lifeSpan: { begin: '1991', ended: null },
+    tags: [ 'punk', 'ska punk', 'punk rock' ],
+    type: 'Group'
+  },
+  releaseGroups: [
+    {
+      id: '642238f2-24b6-3a0b-bfa7-9c0b4731989d',
+      title: 'Rancid',
+      primaryType: 'Album',
+      releaseDate: '1993-05-10',
+      secondaryTypes: []
+    },
+    ...
+    {
+      id: '03a80bc2-716f-4ea9-907d-7c8b9b7fb1cd',
+      title: 'Trouble Maker',
+      primaryType: 'Album',
+      releaseDate: '2017-06-09',
+      secondaryTypes: []
+    }
+  ]
+}
+```
+
+#### getTracksByReleaseGroup(releaseGroup: string)
+
+it allows to retrieve the tracks of a particular album. This method automatically selects the first release of an album and retrieves its tracks.
+
+
 
 ### Discarded providers
 

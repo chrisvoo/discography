@@ -272,13 +272,13 @@ export default class MusicBrainz {
 
     /**
      * Here we retrieve the recordings of a specific release.
-     * @param {string} release A release id
+     * @param {string} releaseId A release id
      * @returns {Promise<Track[] | ErrorResponse>}
      */
-    async getTracksByRelease(release: string): Promise<Track[] | ErrorResponse> {
+    async getTracksByRelease(releaseId: string): Promise<Track[] | ErrorResponse> {
       let releasesResponse: AxiosResponse<any>;
       try {
-        releasesResponse = await this.lookup(Entity.release, release, 'recordings');
+        releasesResponse = await this.lookup(Entity.release, releaseId, 'recordings');
       } catch (e) {
         return {
           error: true,

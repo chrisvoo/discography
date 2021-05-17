@@ -6,6 +6,7 @@
   "files": [
     "/dist"
   ],
+  "homepage": "https://github.com/chrisvoo/discocli",
   "scripts": {
     "clean": "rimraf dist/*",
     "tsc": "tsc",
@@ -25,7 +26,11 @@
   },
   "keywords": [
     "discography",
-    "music"
+    "music",
+    "musicbrainz",
+    "genius",
+    "wikipedia",
+    "tracks"
   ],
   "author": {
     "name": "Christian Castelli",

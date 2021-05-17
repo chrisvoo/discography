@@ -1,7 +1,6 @@
 import fs from 'fs';
 import 'jest-extended';
 import WPClient from '../src/provider/WikiPedia';
-import { showResult } from '../src/utils/terminal';
 // import { showResult } from '../src/utils/terminal';
 
 describe('WikiPedia API', () => {
@@ -31,7 +30,7 @@ describe('WikiPedia API', () => {
     await fs.promises.unlink(`${artist}.html`);
   });
 
-  it.only('can find the tracks of an album (1 table case)', async () => {
+  it('can find the tracks of an album (1 table case)', async () => {
     const album = 'Smash_(The_Offspring_album)';
     const albumDetails = await wpClient.searchTracks(album);
 

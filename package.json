@@ -2,7 +2,7 @@
   "name": "discocli",
   "version": "0.0.1",
   "description": "Discogs client to get artists' discographies",
-  "main": "dist/dcli.js",
+  "main": "dist/src/index.js",
   "files": [
     "/dist"
   ],

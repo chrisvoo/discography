@@ -189,13 +189,25 @@ export default class WikiPedia {
     }
 
     tables.find('th[id*=track]').each((i, th) => {
-      tracks.push(
-        {
-          num: parseInt($(th).text().replace(/\./, ''), 10),
-          title: this.cleanTrackTitle($(th).next()),
-          length: this.convertToSeconds($(th).next().next().text()),
-        },
+      const num = parseInt($(th).text().replace(/\./, ''), 10);
+      const title = this.cleanTrackTitle($(th).next());
+
+      const thirdcol = $(th).next().next();
+      const length = this.convertToSeconds(
+        thirdcol.text().includes(':')
+          ? thirdcol.text()
+          : thirdcol.next().text(),
       );
+
+      if (tracks.length === 0 || tracks.every((t) => t.num !== num)) {
+        tracks.push(
+          {
+            num,
+            title,
+            length,
+          },
+        );
+      }
     });
 
     return {

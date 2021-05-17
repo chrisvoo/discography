@@ -1,6 +1,7 @@
 import fs from 'fs';
 import 'jest-extended';
 import WPClient from '../src/provider/WikiPedia';
+import { showResult } from '../src/utils/terminal';
 // import { showResult } from '../src/utils/terminal';
 
 describe('WikiPedia API', () => {
@@ -30,7 +31,7 @@ describe('WikiPedia API', () => {
     await fs.promises.unlink(`${artist}.html`);
   });
 
-  it('can find the tracks of an album', async () => {
+  it.only('can find the tracks of an album (1 table case)', async () => {
     const album = 'Smash_(The_Offspring_album)';
     const albumDetails = await wpClient.searchTracks(album);
 
@@ -42,5 +43,19 @@ describe('WikiPedia API', () => {
     expect(track).not.toBeUndefined();
     expect(track?.title).toBe('Come Out and Play');
     expect(track?.length).toBe(197);
+  });
+
+  it('can find the tracks of an album (multiple formats, CD/cassette)', async () => {
+    const album = 'The_Offspring_(album)';
+    const albumDetails = await wpClient.searchTracks(album);
+
+    expect(albumDetails.data).not.toBeUndefined();
+    expect(albumDetails?.data?.pageDetails?.pageid).toBe(162338);
+    expect(albumDetails?.data?.tracks?.length).toBe(12);
+
+    const track = albumDetails?.data?.tracks?.filter((t) => t.num === 9)[0];
+    expect(track).not.toBeUndefined();
+    expect(track?.title).toBe('Blackball');
+    expect(track?.length).toBe(204);
   });
 });

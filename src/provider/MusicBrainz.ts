@@ -91,6 +91,7 @@ export interface Track {
   id: string
   length: number
   title: string
+  position: number
 }
 
 /**

@@ -8,7 +8,9 @@ This is intended to be both an importable module and a CLI app (in progress). It
     - [`searchTracks(albumTitle: string, options?: WikiPageOptions)`](#searchtracksalbumtitle-string-options-wikipageoptions)
   - [MusicBrainz](#musicbrainz)
     - [`getArtistDiscography(artist: string, filterSecondaryTypes: string[])`](#getartistdiscographyartist-string-filtersecondarytypes-string)
-    - [getTracksByReleaseGroup(releaseGroup: string)](#gettracksbyreleasegroupreleasegroup-string)
+    - [`getTracksByReleaseGroup(releaseGroup: string)`](#gettracksbyreleasegroupreleasegroup-string)
+  - [Genius](#genius)
+    - [`getLyrics(artistName: string, songName: string)`](#getlyricsartistname-string-songname-string)
   - [Discarded providers](#discarded-providers)
 - [Terms of use](#terms-of-use)
 - [Resources](#resources)
@@ -120,11 +122,50 @@ Here is it a possible response if you search for `Rancid` discography:
 }
 ```
 
-#### getTracksByReleaseGroup(releaseGroup: string)
+#### `getTracksByReleaseGroup(releaseGroup: string)`
 
-it allows to retrieve the tracks of a particular album. This method automatically selects the first release of an album and retrieves its tracks.
+it allows to retrieve the tracks of a particular album. This method automatically selects the oldest release of an album and retrieves its tracks.  
+Here is it the response if you search for the release group `37c2647f-8e58-3839-a6b6-374c9ee88b1d`:
 
+```javascript
+    [
+      {
+        id: 'bfd6a742-7f73-399d-956b-3617c4bc1f02',
+        length: 123440,
+        title: 'Nihilism',
+        position: 1
+      },
+      {
+        id: '897a2f83-da32-3165-acc5-876662594588',
+        length: 173280,
+        title: 'Radio',
+        position: 2
+      },
+      //...
+    ]
+```
 
+### Genius
+
+It allows to retrieve the lyrics of a particular song, given its title an the artist. If you don't provide an access token, it scrapes the search page results.
+
+#### `getLyrics(artistName: string, songName: string)`
+
+This is the only method present inside the class. If you execute `getLyrics('Rancid', 'Nihilism')`, you'll obtain something like that:
+
+```javascript
+    {
+      id: 1702216,
+      artistId: 30419,
+      title: 'Nihilism',
+      lyrics: 'Come into the union district\n' +
+        'Drive down on Sharmon Palms\n' +
+        'White ghettos paint a picture\n' +
+        'Broken homes and broken bones\n' +
+        '\n' +
+        //...
+    }
+```
 
 ### Discarded providers
 

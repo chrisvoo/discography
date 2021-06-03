@@ -1,4 +1,4 @@
-<h1>discocli</h1>
+<h1>Discography</h1>
 
 This is a module that can uses multiple providers and their API, like [WikiPedia](https://www.mediawiki.org/wiki/API:Get_the_contents_of_a_page), [MusicBrainz](https://musicbrainz.org/doc/MusicBrainz_API) and [Genius](https://docs.genius.com/) in order to retrieve discographical information and songs lyrics.
 
@@ -25,7 +25,7 @@ Import the provider you need and call the available methods:
 ### Typescript
 
 ```typescript
-import MusicBrainz, { Discography, Track, showResult } from 'disco';
+import MusicBrainz, { Discography, Track, showResult } from 'discography';
 
 const client = new MusicBrainz();
 const result = await client.getArtistDiscography('Rancid', ['Live', 'Compilation', 'Single']);
@@ -36,7 +36,7 @@ const { artist, releaseGroups } = discography;
 ### Javascript
 
 ```javascript
-const { Genius, showResult } = require('disco');
+const { Genius, showResult } = require('discography');
 const geniusClient = new Genius();
 geniusClient.getLyrics('Rancid', 'Nihilsm')
 	.then(showResult)

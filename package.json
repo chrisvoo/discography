@@ -1,12 +1,12 @@
 {
-  "name": "disco",
+  "name": "discography",
   "version": "1.0.0",
-  "description": "Discogs client to get artists' discographies",
+  "description": "Multiple clients to get artists' discographies",
   "main": "dist/index.js",
   "files": [
     "/dist"
   ],
-  "homepage": "https://github.com/chrisvoo/discocli",
+  "homepage": "https://github.com/chrisvoo/discography",
   "scripts": {
     "clean": "rimraf dist/*",
     "tsc": "tsc",

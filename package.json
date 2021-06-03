@@ -1,8 +1,8 @@
 {
-  "name": "discocli",
-  "version": "0.0.1",
+  "name": "disco",
+  "version": "1.0.0",
   "description": "Discogs client to get artists' discographies",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "files": [
     "/dist"
   ],
@@ -16,9 +16,6 @@
     "prepare": "npm run build",
     "eslint": "eslint src",
     "eslint-fix": "eslint --fix src"
-  },
-  "bin": {
-    "dcli": "./dist/src/dcli.js"
   },
   "engines": {
     "node": ">=10",

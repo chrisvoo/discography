@@ -1,19 +1,48 @@
 <h1>discocli</h1>
 
-This is intended to be both an importable module and a CLI app (in progress). It can uses multiple providers and their API, like [WikiPedia](https://www.mediawiki.org/wiki/API:Get_the_contents_of_a_page) (discography and history), [MusicBrainz](https://musicbrainz.org/doc/MusicBrainz_API) (discography information) and [Genius](https://docs.genius.com/) (lyrics).
+This is a module that can uses multiple providers and their API, like [WikiPedia](https://www.mediawiki.org/wiki/API:Get_the_contents_of_a_page), [MusicBrainz](https://musicbrainz.org/doc/MusicBrainz_API) and [Genius](https://docs.genius.com/) in order to retrieve discographical information and songs lyrics.
 
+- [Usage](#usage)
+	- [Typescript](#typescript)
+	- [Javascript](#javascript)
 - [Providers](#providers)
-  - [Wikipedia](#wikipedia)
-    - [`searchDiscography(artist: string, options: WikiPageOptions)`](#searchdiscographyartist-string-options-wikipageoptions)
-    - [`searchTracks(albumTitle: string, options?: WikiPageOptions)`](#searchtracksalbumtitle-string-options-wikipageoptions)
-  - [MusicBrainz](#musicbrainz)
-    - [`getArtistDiscography(artist: string, filterSecondaryTypes: string[])`](#getartistdiscographyartist-string-filtersecondarytypes-string)
-    - [`getTracksByReleaseGroup(releaseGroup: string)`](#gettracksbyreleasegroupreleasegroup-string)
-  - [Genius](#genius)
-    - [`getLyrics(artistName: string, songName: string)`](#getlyricsartistname-string-songname-string)
-  - [Discarded providers](#discarded-providers)
+	- [Wikipedia](#wikipedia)
+		- [`searchDiscography(artist: string, options: WikiPageOptions)`](#searchdiscographyartist-string-options-wikipageoptions)
+		- [`searchTracks(albumTitle: string, options?: WikiPageOptions)`](#searchtracksalbumtitle-string-options-wikipageoptions)
+	- [MusicBrainz](#musicbrainz)
+		- [`getArtistDiscography(artist: string, filterSecondaryTypes: string[])`](#getartistdiscographyartist-string-filtersecondarytypes-string)
+		- [`getTracksByReleaseGroup(releaseGroup: string)`](#gettracksbyreleasegroupreleasegroup-string)
+	- [Genius](#genius)
+		- [`getLyrics(artistName: string, songName: string)`](#getlyricsartistname-string-songname-string)
+	- [Discarded providers](#discarded-providers)
 - [Terms of use](#terms-of-use)
 - [Resources](#resources)
+
+## Usage
+
+Import the provider you need and call the available methods:
+
+### Typescript
+
+```typescript
+import MusicBrainz, { Discography, Track, showResult } from 'disco';
+
+const client = new MusicBrainz();
+const result = await client.getArtistDiscography('Rancid', ['Live', 'Compilation', 'Single']);
+const discography = result as Discography;
+const { artist, releaseGroups } = discography;
+```
+
+### Javascript
+
+```javascript
+const { Genius, showResult } = require('disco');
+const geniusClient = new Genius();
+geniusClient.getLyrics('Rancid', 'Nihilsm')
+	.then(showResult)
+	.catch(console.error);
+```
+
 
 ## Providers
 
@@ -54,7 +83,7 @@ You can pass the following options as second parameter:
 
 #### `searchTracks(albumTitle: string, options?: WikiPageOptions)`
 
-This method lists all the songs of a particular album, converting the songs durations into seconds. Ideally you should execute `searchDiscography`, take a key of the resulting object (that is the final part the album Wiki page) and pass it to this method.  
+This method lists all the songs of a particular album, converting the songs durations into seconds. Ideally you should execute `searchDiscography`, take a key of the resulting object (that is the final part the album Wiki page) and pass it to this method.
 Here is it an example of what you get when you search `Smash_(The_Offspring_album)`.
 
 
@@ -89,7 +118,7 @@ It allows to freely get all the discography details of an artist/band. The funda
 #### `getArtistDiscography(artist: string, filterSecondaryTypes: string[])`
 
 Retrieves the artist details and all the albums. The second parameter allows to filter
-out those items that have the listed secondary types in their `secondaryTypes` array.  
+out those items that have the listed secondary types in their `secondaryTypes` array.
 Here is it a possible response if you search for `Rancid` discography:
 
 ```javascript
@@ -124,7 +153,7 @@ Here is it a possible response if you search for `Rancid` discography:
 
 #### `getTracksByReleaseGroup(releaseGroup: string)`
 
-it allows to retrieve the tracks of a particular album. This method automatically selects the oldest release of an album and retrieves its tracks.  
+it allows to retrieve the tracks of a particular album. This method automatically selects the oldest release of an album and retrieves its tracks.
 Here is it the response if you search for the release group `37c2647f-8e58-3839-a6b6-374c9ee88b1d`:
 
 ```javascript

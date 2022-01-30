@@ -31,7 +31,7 @@ export default class WikiPediaToSql extends WikiPedia {
       sqlContent.push('\n');
       sqlContent.push('INSERT INTO songs (title, track_number, side, album_id)\nVALUES');
 
-      const { albumPk, wikiPage } = albumReferences[0];
+      const { albumPk, wikiPage } = albumReferences[2];
       const tracksData: WT.WikiTrackResult = await this.searchTracks(wikiPage.replace(/\/wiki\//, ''));
 
       if (tracksData.data?.tracks) {

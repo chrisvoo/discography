@@ -159,23 +159,30 @@ export default class WikiPedia {
     const hasTwoSides = tables.length > 1;
     let isSideA = true;
     let isSideB = false;
+    const lastTableIndex = 0;
     let lastTrackNum = 0;
 
     // for older albums, there are two sides, so two tables and the ordering
     // of the songs starts again fronm 1 in side B
     tables.each((i, table) => {
-      $(table).find('th[id*=track]').each((i, th) => {
-        const num = parseInt($(th).text().replace(/\./, ''), 10);
-        const title = this.cleanTrackTitle($(th).next());
-
-        if (hasTwoSides) {
-          if (num < lastTrackNum) {
-            isSideA = false;
-            isSideB = true;
-          } else {
-            lastTrackNum = num;
-          }
+      if (hasTwoSides) {
+        if (i !== lastTableIndex) {
+          isSideA = false;
+          isSideB = true;
         }
+      }
+
+      $(table).find('th[id*=track]').each((i, th) => {
+				// when an album has two sides (cassette), Wikipedia is not consistent in listening
+				// the tracks' order: sometimes it's increasing, sometimes starts again from 1
+        let num = parseInt($(th).text().replace(/\./, ''), 10);
+        if (lastTrackNum < num) {
+          lastTrackNum = num;
+        } else {
+          num = ++lastTrackNum;
+        }
+
+        const title = this.cleanTrackTitle($(th).next());
 
         const thirdcol = $(th).next().next();
         const length = this.convertToSeconds(

@@ -2,52 +2,10 @@ import wiki from 'wikijs';
 import pretty from 'pretty';
 import cheerio from 'cheerio';
 import fs from 'fs';
-import { showResult } from '../utils/terminal';
-
-export type WikiAlbum = {
-    title: string
-    release: string
-}
-
-export type WikiPage = {
-    title: string
-    pageid: number
-    summary: string
-    touched: string // date
-}
-
-export type WikiDiscography = {
-    pageDetails: WikiPage
-    musicBrainzUrl?: string
-    albums: Record<string, WikiAlbum>
-}
-
-export type WikiPageOptions = {
-  saveHtml?: boolean
-  summary?: boolean
-}
-
-export type WikiDiscographyResult = {
-    message: string
-    data?: WikiDiscography
-}
-
-export type WikiTrack = {
-  num: number
-  title: string
-  length: number
-}
-
-export type WikiTrackResult = {
-  message: string
-  data?: {
-    pageDetails: WikiPage,
-    tracks: WikiTrack[]
-  }
-}
+import * as WT from './types/WikiPediaTypes';
 
 export default class WikiPedia {
-  private wikiClient: ReturnType<typeof wiki>;
+  protected wikiClient: ReturnType<typeof wiki>;
 
   constructor() {
     this.wikiClient = wiki({
@@ -63,8 +21,8 @@ export default class WikiPedia {
    */
   async searchDiscoGraphy(
     artist: string,
-    options?: WikiPageOptions,
-  ): Promise<WikiDiscographyResult> {
+    options?: WT.WikiPageOptions,
+  ): Promise<WT.WikiDiscographyResult> {
     const page = await this.wikiClient.find(`${artist} discography`);
     if (!page) {
       return {
@@ -87,7 +45,7 @@ export default class WikiPedia {
 
     const $ = cheerio.load(content);
     const table = $('#Studio_albums').parent().next('table');
-    const albums: any = {};
+    const albums: WT.AlbumItem[] = [];
 
     $(table).each((index, element) => {
       $(element).find('th[scope="row"]').each((i, el) => {
@@ -98,10 +56,15 @@ export default class WikiPedia {
         const details = $(el).siblings('td').find('li').first();
         const released = details.text().replace(/released: /i, '');
 
-        albums[wikiPage] = {
-          title: albumName.replace(/\/wiki\//, ''),
-          released,
-        };
+        albums.push(
+          {
+            wikiPage,
+            album: {
+              title: albumName.replace(/\/wiki\//, ''),
+              released,
+            },
+          },
+        );
       });
     });
 
@@ -157,11 +120,16 @@ export default class WikiPedia {
    * @param {WikiPageOptions} options save HTML to file, summary inclusion
    * @returns {Promise<WikiTrackResult>}
    */
-  async searchTracks(albumTitle: string, options?: WikiPageOptions): Promise<WikiTrackResult> {
-    const page = await this.wikiClient.page(albumTitle);
-    if (!page) {
+  async searchTracks(
+    albumTitle: string,
+    options?: WT.WikiPageOptions,
+  ): Promise<WT.WikiTrackResult> {
+    let page;
+    try {
+      page = await this.wikiClient.page(albumTitle);
+    } catch (e) {
       return {
-        message: `No tracks found for ${albumTitle}`,
+        message: (e as Error).message,
       };
     }
 
@@ -179,7 +147,7 @@ export default class WikiPedia {
     }
 
     const $ = cheerio.load(content);
-    const tracks: WikiTrack[] = [];
+    const tracks: WT.WikiTrack[] = [];
     const tables = $('table[class="tracklist"]');
 
     if (!tables.length) {
@@ -188,26 +156,45 @@ export default class WikiPedia {
       };
     }
 
-    tables.find('th[id*=track]').each((i, th) => {
-      const num = parseInt($(th).text().replace(/\./, ''), 10);
-      const title = this.cleanTrackTitle($(th).next());
+    const hasTwoSides = tables.length > 1;
+    let isSideA = true;
+    let isSideB = false;
+    let lastTrackNum = 0;
 
-      const thirdcol = $(th).next().next();
-      const length = this.convertToSeconds(
-        thirdcol.text().includes(':')
-          ? thirdcol.text()
-          : thirdcol.next().text(),
-      );
+    // for older albums, there are two sides, so two tables and the ordering
+    // of the songs starts again fronm 1 in side B
+    tables.each((i, table) => {
+      $(table).find('th[id*=track]').each((i, th) => {
+        const num = parseInt($(th).text().replace(/\./, ''), 10);
+        const title = this.cleanTrackTitle($(th).next());
 
-      if (tracks.length === 0 || tracks.every((t) => t.num !== num)) {
+        if (hasTwoSides) {
+          if (num < lastTrackNum) {
+            isSideA = false;
+            isSideB = true;
+          } else {
+            lastTrackNum = num;
+          }
+        }
+
+        const thirdcol = $(th).next().next();
+        const length = this.convertToSeconds(
+          thirdcol.text().includes(':')
+            ? thirdcol.text()
+            : thirdcol.next().text(),
+        );
+
+        const side = hasTwoSides && isSideA ? 1 : 2;
+
         tracks.push(
           {
             num,
             title,
+            side,
             length,
           },
         );
-      }
+      });
     });
 
     return {

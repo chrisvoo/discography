@@ -19,6 +19,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+		"no-tabs": "off",
         "no-restricted-globals": "off",
         "no-plusplus": "off",
         "class-methods-use-this": "off",

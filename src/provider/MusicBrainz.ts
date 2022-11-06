@@ -186,7 +186,7 @@ export default class MusicBrainz {
       } catch (e) {
         return {
           error: true,
-          message: (e as AxiosError).response?.data.error || e.message,
+          message: (e as AxiosError).response?.data.error || (e as Error).message,
         };
       }
 
@@ -207,7 +207,7 @@ export default class MusicBrainz {
       } catch (e) {
         return {
           error: true,
-          message: (e as AxiosError).response?.data.error || e.message,
+          message: (e as AxiosError).response?.data.error || (e as Error).message,
         };
       }
       const {
@@ -257,7 +257,7 @@ export default class MusicBrainz {
       } catch (e) {
         return {
           error: true,
-          message: (e as AxiosError).response?.data.error || e.message,
+          message: (e as AxiosError).response?.data.error || (e as Error).message,
         };
       }
 
@@ -283,7 +283,7 @@ export default class MusicBrainz {
       } catch (e) {
         return {
           error: true,
-          message: e.data?.error || e.message,
+          message: (e as AxiosError).response?.data.error || (e as Error).message,
         };
       }
 

@@ -9,7 +9,7 @@ describe('WikiPedia API', () => {
   const fileExists = (path: string) => new Promise((resolve, reject) => {
     try {
       fs.promises.access(path).then(() => resolve(true));
-    } catch (e) {
+    } catch (e: any) {
       reject(e.message);
     }
   });
@@ -22,9 +22,9 @@ describe('WikiPedia API', () => {
 
     const { albums, pageDetails } = discography.data!;
 
-    expect(fileExists(`${artist}.html`)).resolves.toBeTrue();
+    expect(fileExists(`${artist}.html`)).resolves.toBe(true);
     expect(pageDetails.pageid).toEqual(8426694);
-    expect(Object.keys(albums).length >= 10).toBeTrue();
+    expect(Object.keys(albums).length >= 10).toBe(true);
     expect(Object.keys(albums).includes('Ixnay_on_the_Hombre'));
 
     await fs.promises.unlink(`${artist}.html`);
@@ -50,7 +50,7 @@ describe('WikiPedia API', () => {
 
     expect(albumDetails.data).not.toBeUndefined();
     expect(albumDetails?.data?.pageDetails?.pageid).toBe(162338);
-    expect(albumDetails?.data?.tracks?.length).toBe(12);
+    expect(albumDetails?.data?.tracks?.length).toBe(23);
 
     const track = albumDetails?.data?.tracks?.filter((t) => t.num === 9)[0];
     expect(track).not.toBeUndefined();
@@ -69,5 +69,15 @@ describe('WikiPedia API', () => {
     expect(track).not.toBeUndefined();
     expect(track?.title).toBe('Night Prowler');
     expect(track?.length).toBe(373);
+  });
+
+  it('can find the musicians of an album', async () => {
+    const album = 'High_Voltage_(1975_album)';
+    const albumDetails = await wpClient.searchTracks(album);
+
+    expect(albumDetails.data).not.toBeUndefined();
+    expect(albumDetails.data?.musicians).toHaveLength(9);
+    expect(albumDetails.data?.musicians.filter((m) => m.name === 'Bon Scott'))
+      .toContainEqual({ name: 'Bon Scott', instruments: 'lead vocals' });
   });
 });

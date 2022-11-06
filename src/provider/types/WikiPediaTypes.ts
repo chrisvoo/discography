@@ -1,3 +1,5 @@
+import { string } from "joi"
+
 export type WikiAlbum = {
     title: string
     released: string
@@ -43,10 +45,16 @@ export type WikiTrack = {
   length: number
 }
 
+export type WikiMusician = {
+	name: string,
+	instruments: string
+}
+
 export type WikiTrackResult = {
   message: string
   data?: {
     pageDetails: WikiPage,
-    tracks: WikiTrack[]
+    tracks: WikiTrack[],
+		musicians: WikiMusician[]
   }
 }

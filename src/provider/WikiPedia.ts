@@ -204,6 +204,17 @@ export default class WikiPedia {
       });
     });
 
+    const members = $('#Personnel').closest('h2').next('ul');
+    const musicians: WT.WikiMusician[] = [];
+
+    $(members).find('li').each((i, li) => {
+      const musician = $(li).text();
+      const [name, instruments] = musician.split(' – ');
+      musicians.push({
+        name, instruments,
+      });
+    });
+
     return {
       message: 'OK',
       data: {
@@ -211,6 +222,7 @@ export default class WikiPedia {
           pageid, title, touched, summary,
         },
         tracks,
+        musicians,
       },
     };
   }

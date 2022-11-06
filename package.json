@@ -1,6 +1,6 @@
 {
   "name": "discography",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Multiple clients to get artists' discographies",
   "main": "dist/index.js",
   "files": [
@@ -48,13 +48,13 @@
     "ora": "^5.2.0",
     "pretty": "^2.0.0",
     "string-similarity": "^4.0.4",
-    "wikijs": "^6.2.0"
+    "wikijs": "^6.3"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.28",
     "@types/commander": "^2.12.2",
     "@types/inquirer": "^7.3.1",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^27",
     "@types/pretty": "^2.0.0",
     "@types/string-similarity": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
@@ -62,11 +62,11 @@
     "eslint": "^7",
     "eslint-config-airbnb-base": "^14",
     "eslint-plugin-import": "^2",
-    "jest": "^26",
+    "jest": "^27",
     "jest-extended": "^2.0.0",
     "npm-run-all": "^1.8.0",
     "rimraf": "^3",
-    "ts-jest": "^26.5.5",
+    "ts-jest": "^27",
     "typescript": "^4"
   }
 }

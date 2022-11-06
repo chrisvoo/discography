@@ -163,7 +163,7 @@ export default class WikiPedia {
     let lastTrackNum = 0;
 
     // for older albums, there are two sides, so two tables and the ordering
-    // of the songs starts again fronm 1 in side B
+    // of the songs starts again from 1 in side B
     tables.each((i, table) => {
       if (hasTwoSides) {
         if (i !== lastTableIndex) {
@@ -173,8 +173,8 @@ export default class WikiPedia {
       }
 
       $(table).find('th[id*=track]').each((i, th) => {
-				// when an album has two sides (cassette), Wikipedia is not consistent in listening
-				// the tracks' order: sometimes it's increasing, sometimes starts again from 1
+        // when an album has two sides (cassette), Wikipedia is not consistent in listening
+        // the tracks' order: sometimes it's increasing, sometimes starts again from 1
         let num = parseInt($(th).text().replace(/\./, ''), 10);
         if (lastTrackNum < num) {
           lastTrackNum = num;

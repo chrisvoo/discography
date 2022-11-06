@@ -57,4 +57,17 @@ describe('WikiPedia API', () => {
     expect(track?.title).toBe('Blackball');
     expect(track?.length).toBe(204);
   });
+
+  it('can find the tracks of an album with two sides', async () => {
+    const album = 'Highway to hell';
+    const albumDetails = await wpClient.searchTracks(album);
+
+    expect(albumDetails.data).not.toBeUndefined();
+    expect(albumDetails?.data?.tracks?.length).toBe(10);
+
+    const track = albumDetails?.data?.tracks?.filter((t) => t.num === 10)[0];
+    expect(track).not.toBeUndefined();
+    expect(track?.title).toBe('Night Prowler');
+    expect(track?.length).toBe(373);
+  });
 });

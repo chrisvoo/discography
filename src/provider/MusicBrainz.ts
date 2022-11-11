@@ -271,6 +271,45 @@ export default class MusicBrainz {
       return this.getTracksByRelease(releaseId);
     }
 
+    async getArtist(name: string): Promise<ArtistDetails | ErrorResponse | null> {
+      let artistReponse: AxiosResponse<any>;
+
+      try {
+        artistReponse = await this.search(Entity.artist, {
+          query: `${name} AND type:Person`,
+          limit: 1,
+        });
+      } catch (e) {
+        return {
+          error: true,
+          message: (e as AxiosError).response?.data.error || (e as Error).message,
+        };
+      }
+
+      if (artistReponse.data.artists.length) {
+        const artist = artistReponse.data.artists[0];
+
+        const {
+          id, name, type, country, tags,
+        } = artist;
+        const lifeSpan = artist['life-span']; // begin, end
+
+        return {
+          id,
+          type,
+          name,
+          country,
+          lifeSpan: {
+            begin: lifeSpan.begin,
+            ended: lifeSpan.end,
+          },
+          tags,
+        };
+      }
+
+      return null;
+    }
+
     /**
      * Here we retrieve the recordings of a specific release.
      * @param {string} releaseId A release id

@@ -11,6 +11,7 @@ This is a module that can uses multiple providers and their API, like [WikiPedia
 		- [`searchTracks(albumTitle: string, options?: WikiPageOptions)`](#searchtracksalbumtitle-string-options-wikipageoptions)
 	- [MusicBrainz](#musicbrainz)
 		- [`getArtistDiscography(artist: string, filterSecondaryTypes: string[])`](#getartistdiscographyartist-string-filtersecondarytypes-string)
+		- [`getArtist(name: string)`](#getartistname-string)
 		- [`getTracksByReleaseGroup(releaseGroup: string)`](#gettracksbyreleasegroupreleasegroup-string)
 	- [Genius](#genius)
 		- [`getLyrics(artistName: string, songName: string)`](#getlyricsartistname-string-songname-string)
@@ -150,6 +151,46 @@ Here is it a possible response if you search for `Rancid` discography:
   ]
 }
 ```
+
+#### `getArtist(name: string)`
+
+Retrieve the artist details (just a person).
+Here is it a possible response if you search for `Bon Scott` discography:
+
+```javascript
+{
+	id: '0d212894-db54-4cc1-9ded-3cac50183a1d'
+	type: 'Person',
+	name: 'Bon Scott',
+	country: 'GB',
+	lifeSpan: {
+		begin: '1946-07-09',
+		ended: '1980-02-19- [Usage](#usage)
+	- [Typescript](#typescript)
+	- [Javascript](#javascript)
+- [Providers](#providers)
+	- [Wikipedia](#wikipedia)
+		- [`searchDiscography(artist: string, options: WikiPageOptions)`](#searchdiscographyartist-string-options-wikipageoptions)
+		- [`searchTracks(albumTitle: string, options?: WikiPageOptions)`](#searchtracksalbumtitle-string-options-wikipageoptions)
+	- [MusicBrainz](#musicbrainz)
+		- [`getArtistDiscography(artist: string, filterSecondaryTypes: string[])`](#getartistdiscographyartist-string-filtersecondarytypes-string)
+		- [`getArtist(name: string)`](#getartistname-string)
+		- [`getTracksByReleaseGroup(releaseGroup: string)`](#gettracksbyreleasegroupreleasegroup-string)
+	- [Genius](#genius)
+		- [`getLyrics(artistName: string, songName: string)`](#getlyricsartistname-string-songname-string)
+	- [Discarded providers](#discarded-providers)
+- [Terms of use](#terms-of-use)
+- [Resources](#resources)',
+	},
+	tags: [
+		{
+			count: 1,
+			name: "rock"
+		}
+	]
+}
+```
+
 
 #### `getTracksByReleaseGroup(releaseGroup: string)`
 

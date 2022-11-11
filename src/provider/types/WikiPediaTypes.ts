@@ -1,5 +1,3 @@
-import { string } from "joi"
-
 export type WikiAlbum = {
     title: string
     released: string

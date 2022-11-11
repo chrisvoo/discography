@@ -1,5 +1,4 @@
 import fs from 'fs';
-import 'jest-extended';
 import WPClient from '../src/provider/WikiPedia';
 // import { showResult } from '../src/utils/terminal';
 

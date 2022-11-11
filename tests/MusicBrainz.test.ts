@@ -1,4 +1,3 @@
-import 'jest-extended';
 import MusicBrainz, { ArtistDetails, Discography, Track } from '../src/provider/MusicBrainz';
 import { showResult } from '../src/utils/terminal';
 
@@ -7,7 +6,7 @@ describe('MusicBrainz API', () => {
 
   it('can get artist discography', async () => {
     const result = await client.getArtistDiscography('Rancid', ['Live', 'Compilation', 'Single']);
-    expect('error' in result).toBeFalse();
+    expect('error' in result).toBe(false);
 
     const discography = result as Discography;
     const { artist, releaseGroups } = discography;
@@ -23,7 +22,6 @@ describe('MusicBrainz API', () => {
     expect('error' in result).toBe(false);
 
     const tracks = result as Track[];
-    expect(tracks).toBeArray();
     const {
       id, length, title, position,
     } = tracks[0];

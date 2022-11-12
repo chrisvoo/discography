@@ -4,7 +4,7 @@ import cheerio from 'cheerio';
 import fs from 'fs';
 import * as WT from './types/WikiPediaTypes';
 
-export default class WikiPedia {
+export class WikiPedia {
   protected wikiClient: ReturnType<typeof wiki>;
 
   constructor() {

@@ -1,11 +1,5 @@
 import { Client, Song } from 'genius-lyrics';
-
-export type Lyrics = {
-  id: number
-  artistId: number
-  title: string
-  lyrics: string
-}
+import { Lyrics } from './types/GeniusTypes';
 
 /*
 {
@@ -45,7 +39,7 @@ export type Lyrics = {
 /**
  * Consumes Genius API through a third-party client.
  */
-export default class Genius {
+export class Genius {
     private client: Client;
 
     /**

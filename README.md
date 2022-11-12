@@ -26,7 +26,7 @@ Import the provider you need and call the available methods:
 ### Typescript
 
 ```typescript
-import MusicBrainz, { Discography, Track, showResult } from 'discography';
+import { MusicBrainz, Discography, Track, showResult } from 'discography';
 
 const client = new MusicBrainz();
 const result = await client.getArtistDiscography('Rancid', ['Live', 'Compilation', 'Single']);

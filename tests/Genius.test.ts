@@ -1,4 +1,5 @@
-import Genius, { Lyrics } from '../src/provider/Genius';
+import { Genius } from '../src/provider/Genius';
+import { Lyrics } from '../src/provider/types/GeniusTypes';
 import { showResult } from '../src/utils/terminal';
 
 describe('Genius API', () => {

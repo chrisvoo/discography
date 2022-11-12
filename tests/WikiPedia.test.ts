@@ -1,9 +1,9 @@
 import fs from 'fs';
-import WPClient from '../src/provider/WikiPedia';
+import { WikiPedia } from '../src/provider/WikiPedia';
 // import { showResult } from '../src/utils/terminal';
 
 describe('WikiPedia API', () => {
-  const wpClient = new WPClient();
+  const wpClient = new WikiPedia();
 
   const fileExists = (path: string) => new Promise((resolve, reject) => {
     try {

@@ -1,6 +1,6 @@
 import mom from 'moment';
 import * as WT from './types/WikiPediaTypes';
-import WikiPedia from './WikiPedia';
+import { WikiPedia } from './WikiPedia';
 
 /**
  * Utility class to populate some RBDMS tables that define albums and songs of a band.

@@ -1,4 +1,5 @@
-import MusicBrainz, { ArtistDetails, Discography, Track } from '../src/provider/MusicBrainz';
+import { MusicBrainz } from '../src/provider/MusicBrainz';
+import { Discography, Track, ArtistDetails } from '../src/provider/types/MusicBrainzTypes';
 import { showResult } from '../src/utils/terminal';
 
 describe('MusicBrainz API', () => {

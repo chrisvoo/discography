@@ -68,7 +68,10 @@ export class WikiPedia {
       });
     });
 
-    const musicBrainzUrl = $('a[href*="musicbrainz.org"]').attr('href');
+    let musicBrainzUrl = $('a[href*="musicbrainz.org"]').attr('href');
+    if (!musicBrainzUrl?.startsWith('http')) {
+      musicBrainzUrl += 'https';
+    }
 
     return {
       message: 'OK',

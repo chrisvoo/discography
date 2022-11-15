@@ -1,6 +1,6 @@
 {
   "name": "discography",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Multiple clients to get artists' discographies",
   "main": "dist/index.js",
   "files": [

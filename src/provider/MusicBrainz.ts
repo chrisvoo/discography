@@ -3,6 +3,7 @@ import axios, {
 } from 'axios';
 import {
   Artist, ArtistDetails, Discography, Entity, ErrorResponse, ReleaseGroup,
+  ReleaseGroupDetails,
   SearchArtistResult, SearchParams, Tag, Track,
 } from './types/MusicBrainzTypes';
 
@@ -81,7 +82,7 @@ export class MusicBrainz {
 
     /**
      * Searches the best match for the specified artist and automatically returns the
-     * release groups (albums)
+     * release groups (only studio albums)
      * @param {string} artist The artist's name
      * @param {string[]} filterOutSecondaryTypes A list of secondary types to be filtered out
      * @returns {Promise<Discography | ErrorResponse>}
@@ -107,7 +108,7 @@ export class MusicBrainz {
 
       if (result.data.count > 1) {
         foundArtist = artists.filter(
-          (a) => a.score === Math.max(...artists.map((a) => a.score)),
+          (a): boolean => a.score === Math.max(...artists.map((a): number => a.score)),
         )[0];
       } else {
         foundArtist = artists[0];
@@ -128,10 +129,14 @@ export class MusicBrainz {
 
       let groups = releaseGroupsResponse.data['release-groups'];
 
+      groups = groups.filter(
+        (group): boolean => group['primary-type'] === 'Album',
+      );
+
       if (filterOutSecondaryTypes.length > 0) {
         groups = groups.filter(
-          (group) => group['secondary-types'].every(
-            (type) => !filterOutSecondaryTypes.includes(type),
+          (group): boolean => group['secondary-types'].every(
+            (type): boolean => !filterOutSecondaryTypes.includes(type),
           ),
         );
       }
@@ -145,7 +150,7 @@ export class MusicBrainz {
           tags: this.getMainTags(tags),
           type,
         },
-        releaseGroups: groups.map((group) => ({
+        releaseGroups: groups.map((group): ReleaseGroupDetails => ({
           id: group.id,
           title: group.title,
           primaryType: group['primary-type'],
